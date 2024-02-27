@@ -20,8 +20,7 @@ class CollectAdmin(admin.ModelAdmin):
 
     def get_payment_counter(self, obj):
         """Позволяет увидеть кол-во платежей."""
-        return Payment.objects.filter(
-            collect=obj).aggregate(Count('amount'))['amount__count']
+        return Payment.objects.filter(collect=obj).count()
     get_payment_counter.short_description = 'Всего в пожертвований'
 
     def get_payment_amount(self, obj):

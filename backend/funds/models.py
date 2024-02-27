@@ -31,7 +31,7 @@ class Collect(models.Model):
     target_sum = models.DecimalField('Целевая сумма',
                                      max_digits=20,
                                      decimal_places=2,
-                                     null=True,
+                                     null=False,
                                      blank=False)
     image = models.ImageField(blank=True)
     finish_date = models.DateTimeField('Время окончания')
