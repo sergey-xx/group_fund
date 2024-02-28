@@ -1,9 +1,12 @@
 import base64
 
+from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
 from rest_framework import serializers
 
 from funds.models import Collect, Payment, Reason
+
+User = get_user_model()
 
 
 class Base64ImageField(serializers.ImageField):
@@ -22,6 +25,8 @@ class Base64ImageField(serializers.ImageField):
 class PaymentSerializer(serializers.ModelSerializer):
     """Сериализатор объектов Платежей."""
 
+    payer = serializers.PrimaryKeyRelatedField(required=True,
+                                               queryset=User.objects.all())
     class Meta:
         model = Payment
         fields = ('id',

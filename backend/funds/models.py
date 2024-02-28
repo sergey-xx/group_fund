@@ -50,15 +50,16 @@ class Payment(models.Model):
                                  blank=False)
 
     payer = models.ForeignKey(User,
-                              on_delete=models.PROTECT,
-                              null=False,
+                              on_delete=models.SET_NULL,
+                              null=True,
+                              blank=False,
                               verbose_name='Плательщик')
     date = models.DateTimeField('Время платежа',
                                 auto_now_add=True)
     collect = models.ForeignKey(Collect,
                                 null=False,
                                 blank=False,
-                                on_delete=models.PROTECT,
+                                on_delete=models.CASCADE,
                                 related_name='payment',
                                 verbose_name='Сбор')
 
