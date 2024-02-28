@@ -1,12 +1,11 @@
+from django.core.cache import cache
+from django.db.models import Count, Sum
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
-from django.db.models import Count, Sum
 
-from funds.models import Collect, Payment
-from .serializers import CollectSerializer, PaymentSerializer
 from .permissions import IsPaymentAccount
-
-from django.core.cache import cache
+from .serializers import CollectSerializer, PaymentSerializer
+from funds.models import Collect, Payment
 
 
 class CollectViewSet(viewsets.ModelViewSet):
@@ -27,7 +26,7 @@ class CollectViewSet(viewsets.ModelViewSet):
             return queryset_cache
         queryset_cache = super().get_queryset()
         cache.set(key=self.cache_key,
-                  value=super().get_queryset(), timeout=30)
+                  value=super().get_queryset(), timeout=600)
         return queryset_cache
 
     def perform_create(self, serializer):
@@ -49,7 +48,7 @@ class PaymentViewSet(viewsets.ModelViewSet):
     queryset = Payment.objects.all().order_by('-id')
     serializer_class = PaymentSerializer
     http_method_names = ['get', 'post', 'update', 'delete']
-    permission_classes = (IsAuthenticated, IsPaymentAccount, )
+    permission_classes = (IsAuthenticated, IsPaymentAccount)
     cache_key = 'payment_queryset'
 
     def get_queryset(self):
@@ -59,7 +58,7 @@ class PaymentViewSet(viewsets.ModelViewSet):
         queryset_cache = super().get_queryset()
         cache.set(key=self.cache_key,
                   value=super().get_queryset(),
-                  timeout=30)
+                  timeout=600)
         return queryset_cache
 
     def perform_create(self, serializer):

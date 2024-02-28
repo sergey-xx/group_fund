@@ -6,7 +6,6 @@ volumes:
   media_volume:
   data_volume:
   redis_data:
-  sent_emails:
 
 services:
   db:

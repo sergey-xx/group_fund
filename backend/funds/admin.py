@@ -1,7 +1,7 @@
 from django.contrib import admin
-from django.db.models import Sum, Count
+from django.db.models import Sum
 
-from .models import Payment, Collect, Reason
+from .models import Collect, Payment, Reason
 
 
 @admin.register(Payment)

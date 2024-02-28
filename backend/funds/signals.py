@@ -1,5 +1,5 @@
-from django.dispatch import receiver
 from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 from core.emails import send_collect_confirm
 from .models import Collect
