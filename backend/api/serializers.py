@@ -27,6 +27,7 @@ class PaymentSerializer(serializers.ModelSerializer):
 
     payer = serializers.PrimaryKeyRelatedField(required=True,
                                                queryset=User.objects.all())
+
     class Meta:
         model = Payment
         fields = ('id',
