@@ -3,7 +3,7 @@ import base64
 from django.core.files.base import ContentFile
 from rest_framework import serializers
 
-from funds.models import Collect, Payment
+from funds.models import Collect, Payment, Reason
 
 
 class Base64ImageField(serializers.ImageField):
@@ -41,6 +41,8 @@ class CollectSerializer(serializers.ModelSerializer):
                                          read_only=True)
     payments = PaymentSerializer(source='payment', many=True, read_only=True)
     image = Base64ImageField(required=False)
+    reason = serializers.PrimaryKeyRelatedField(required=True,
+                                                queryset=Reason.objects.all())
 
     class Meta:
         model = Collect
