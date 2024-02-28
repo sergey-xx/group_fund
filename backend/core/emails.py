@@ -1,6 +1,7 @@
 from django.conf import settings
 from .tasks import send_email_task
 
+
 def send_collect_confirm(collect):
     """Оправка уведомления о проверки документов."""
     last_name = collect.author.last_name

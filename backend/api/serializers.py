@@ -35,6 +35,7 @@ class PaymentSerializer(serializers.ModelSerializer):
 
 class CollectSerializer(serializers.ModelSerializer):
     """Сериализатор объектов Сбора."""
+
     pay_count = serializers.IntegerField(read_only=True)
     collected = serializers.DecimalField(max_digits=10,
                                          decimal_places=2,

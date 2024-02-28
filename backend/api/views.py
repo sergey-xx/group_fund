@@ -19,19 +19,28 @@ class CollectViewSet(viewsets.ModelViewSet):
     serializer_class = CollectSerializer
     http_method_names = ['get', 'post', 'update', 'delete']
     permission_classes = (IsAuthenticated,)
-
-    def perform_create(self, serializer):
-        cache.delete('collect_queryset')
-        serializer.save(author=self.request.user)
+    cache_key = 'collect_queryset'
 
     def get_queryset(self):
-        queryset_cache = cache.get('collect_queryset')
+        queryset_cache = cache.get(self.cache_key)
         if queryset_cache:
             return queryset_cache
         queryset_cache = super().get_queryset()
-        cache.set(key='collect_queryset',
+        cache.set(key=self.cache_key,
                   value=super().get_queryset(), timeout=30)
         return queryset_cache
+
+    def perform_create(self, serializer):
+        cache.delete(self.cache_key)
+        serializer.save(author=self.request.user)
+
+    def perform_destroy(self, instance):
+        cache.delete(self.cache_key)
+        return super().perform_destroy(instance)
+
+    def perform_update(self, serializer):
+        cache.delete(self.cache_key)
+        return super().perform_update(serializer)
 
 
 class PaymentViewSet(viewsets.ModelViewSet):
@@ -41,16 +50,26 @@ class PaymentViewSet(viewsets.ModelViewSet):
     serializer_class = PaymentSerializer
     http_method_names = ['get', 'post', 'update', 'delete']
     permission_classes = (IsAuthenticated, IsPaymentAccount, )
-
-    def perform_create(self, serializer):
-        cache.delete_many(['collect_queryset', 'payment_queryset'])
-        return super().perform_create(serializer)
+    cache_key = 'payment_queryset'
 
     def get_queryset(self):
-        queryset_cache = cache.get('payment_queryset')
+        queryset_cache = cache.get(self.cache_key)
         if queryset_cache:
             return queryset_cache
         queryset_cache = super().get_queryset()
-        cache.set(key='payment_queryset',
-                  value=super().get_queryset(), timeout=30)
+        cache.set(key=self.cache_key,
+                  value=super().get_queryset(),
+                  timeout=30)
         return queryset_cache
+
+    def perform_create(self, serializer):
+        cache.delete_many([CollectViewSet.cache_key, self.cache_key])
+        return super().perform_create(serializer)
+
+    def perform_destroy(self, instance):
+        cache.delete_many([CollectViewSet.cache_key, self.cache_key])
+        return super().perform_destroy(instance)
+
+    def perform_update(self, serializer):
+        cache.delete_many([CollectViewSet.cache_key, self.cache_key])
+        return super().perform_update(serializer)
