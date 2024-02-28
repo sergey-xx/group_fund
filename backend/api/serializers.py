@@ -35,7 +35,10 @@ class PaymentSerializer(serializers.ModelSerializer):
 
 class CollectSerializer(serializers.ModelSerializer):
     """Сериализатор объектов Сбора."""
-
+    pay_count = serializers.IntegerField(read_only=True)
+    collected = serializers.DecimalField(max_digits=10,
+                                         decimal_places=2,
+                                         read_only=True)
     payments = PaymentSerializer(source='payment', many=True, read_only=True)
     image = Base64ImageField(required=False)
 
@@ -47,6 +50,8 @@ class CollectSerializer(serializers.ModelSerializer):
                   'reason',
                   'description',
                   'target_sum',
+                  'collected',
+                  'pay_count',
                   'image',
                   'finish_date',
                   'payments'
