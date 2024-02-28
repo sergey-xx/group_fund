@@ -4,4 +4,4 @@ RUN pip install gunicorn==20.1.0
 COPY requirements.txt .
 RUN pip install -r requirements.txt --no-cache-dir
 COPY . .
-CMD ["gunicorn", "-b", "0.0.0.0", "-p", "8052", "groupfund.wsgi"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8052", "groupfund.wsgi"]

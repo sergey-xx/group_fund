@@ -29,23 +29,22 @@ services:
       - db
       - redis
     volumes:
-      - static_volume:/backend_static/
+      - static_volume:/collected_static/
       - media_volume:/media/
-      - data_volume:/data/
     ports:
       - 8052:80
   worker:
     build: ./backend/
     command: celery -A groupfund worker --loglevel info
     env_file: .env
-    volumes:
-      - sent_emails:/app/sent_emails/
     depends_on:
       - backend
       - redis
   gateway:
     build: ./infra/
     env_file: .env
+    depends_on:
+      - backend
     volumes:
       - static_volume:/staticfiles/
       - media_volume:/media/
